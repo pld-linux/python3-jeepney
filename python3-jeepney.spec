@@ -7,7 +7,7 @@ Summary:	Low-level, pure Python DBus protocol wrapper
 Summary(pl.UTF-8):	Niskopoziomowe obudowanie protokołu DBus w czystym Pythonie
 Name:		python3-jeepney
 Version:	0.7.1
-Release:	1
+Release:	2
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jeepney/
