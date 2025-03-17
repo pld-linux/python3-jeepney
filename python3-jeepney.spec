@@ -6,16 +6,17 @@
 Summary:	Low-level, pure Python DBus protocol wrapper
 Summary(pl.UTF-8):	Niskopoziomowe obudowanie protokołu DBus w czystym Pythonie
 Name:		python3-jeepney
-Version:	0.7.1
-Release:	5
+Version:	0.9.0
+Release:	1
 License:	MIT
 Group:		Libraries/Python
 #Source0Download: https://pypi.org/simple/jeepney/
 Source0:	https://files.pythonhosted.org/packages/source/j/jeepney/jeepney-%{version}.tar.gz
-# Source0-md5:	d804ad938b27d9b761f2c44f8d33fef6
+# Source0-md5:	d0c0d388ee003d6475750aebe56fc699
 URL:		https://pypi.org/project/jeepney/
 BuildRequires:	python3-modules >= 1:3.6
-BuildRequires:	python3-setuptools
+BuildRequires:	python3-build
+BuildRequires:	python3-installer
 %if %{with tests}
 BuildRequires:	python3-async_timeout
 BuildRequires:	python3-pytest
@@ -27,6 +28,7 @@ BuildRequires:	python3-trio
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.714
 %if %{with doc}
+BuildRequires:	python3-sphinx_rtd_theme
 BuildRequires:	sphinx-pdg-3
 %endif
 Requires:	python3-modules >= 1:3.6
@@ -62,7 +64,7 @@ Dokumentacja API jeepney.
 %setup -q -n jeepney-%{version}
 
 %build
-%py3_build
+%py3_build_pyproject
 
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
@@ -78,9 +80,7 @@ PYTEST_PLUGINS="pytest_asyncio.plugin,pytest_trio.plugin" \
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%py3_install
-
-%{__rm} -r $RPM_BUILD_ROOT%{py3_sitescriptdir}/jeepney{,/io,/integrate}/tests
+%py3_install_pyproject
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 cp -a examples/*.py $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
@@ -92,7 +92,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc LICENSE README.rst
 %{py3_sitescriptdir}/jeepney
-%{py3_sitescriptdir}/jeepney-%{version}-py*.egg-info
+%{py3_sitescriptdir}/jeepney-%{version}.dist-info
 %{_examplesdir}/%{name}-%{version}
 
 %if %{with doc}
