@@ -14,24 +14,30 @@ Group:		Libraries/Python
 Source0:	https://files.pythonhosted.org/packages/source/j/jeepney/jeepney-%{version}.tar.gz
 # Source0-md5:	d0c0d388ee003d6475750aebe56fc699
 URL:		https://pypi.org/project/jeepney/
-BuildRequires:	python3-modules >= 1:3.6
 BuildRequires:	python3-build
+BuildRequires:	python3-flit_core >= 3.11
+BuildRequires:	python3-flit_core < 4
 BuildRequires:	python3-installer
+BuildRequires:	python3-modules >= 1:3.7
 %if %{with tests}
+%if "%{_ver_lt %{py3_ver} 3.11}" == "1"
 BuildRequires:	python3-async_timeout
+%endif
 BuildRequires:	python3-pytest
-BuildRequires:	python3-pytest-asyncio
+BuildRequires:	python3-pytest-asyncio >= 0.17
 BuildRequires:	python3-pytest-trio
 BuildRequires:	python3-testpath
 BuildRequires:	python3-trio
 %endif
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.714
+BuildRequires:	rpmbuild(macros) >= 2.044
 %if %{with doc}
+BuildRequires:	python3-outcome
 BuildRequires:	python3-sphinx_rtd_theme
+BuildRequires:	python3-trio
 BuildRequires:	sphinx-pdg-3
 %endif
-Requires:	python3-modules >= 1:3.6
+Requires:	python3-modules >= 1:3.7
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -69,7 +75,7 @@ Dokumentacja API jeepney.
 %if %{with tests}
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 \
 PYTEST_PLUGINS="pytest_asyncio.plugin,pytest_trio.plugin" \
-%{__python3} -m pytest jeepney/tests jeepney/*/tests
+%{__python3} -m pytest jeepney
 %endif
 
 %if %{with doc}
@@ -83,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %py3_install_pyproject
 
 install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-cp -a examples/*.py $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
+cp -p examples/*.py $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -98,5 +104,5 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files apidocs
 %defattr(644,root,root,755)
-%doc docs/_build/html/{_modules,_static,*.html,*.js}
+%doc docs/_build/html/{_images,_modules,_static,api,*.html,*.js}
 %endif
